@@ -1,0 +1,8 @@
+# Prettier Ignore folders
+dist
+.git
+.husky
+
+# ingore html files
+index.html
+
