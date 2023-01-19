@@ -18,18 +18,19 @@ const Pan: React.FC<{}> = (props) => {
   async function readText() {
     let text = ""
     try {
-      const permission = await navigator.permissions.query({
+      // const permission =
+      await navigator.permissions.query({
         // @ts-expect-error
         name: "clipboard-read"
       })
-      if (permission.state === "denied") {
-        toast({
-          title: "浏览器不让读取粘贴板🥲",
-          status: "warning",
-          isClosable: true,
-          position: "top"
-        })
-      }
+      // if (permission.state === "denied") {
+      //   toast({
+      //     title: "浏览器不让读取粘贴板🥲",
+      //     status: "warning",
+      //     isClosable: true,
+      //     position: "top"
+      //   })
+      // }
       const clipboardContents = await navigator.clipboard.read()
 
       for (const item of clipboardContents) {
