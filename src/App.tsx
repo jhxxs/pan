@@ -1,48 +1,58 @@
 import { useState } from "react"
 import "./App.css"
 
-import { ChakraProvider, Button } from "@chakra-ui/react"
+import { ChakraProvider, Button, useToast } from "@chakra-ui/react"
 import theme from "./utils/theme"
 import ThemeToggle from "./components/ThemeToggle"
-import { css } from "@linaria/core"
 import Pan from "./components/Pan"
+import { Icon } from "@chakra-ui/react"
+import { ImGithub } from "react-icons/im"
+
+function geItem() {
+  return {
+    id: crypto.randomUUID()
+  }
+}
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [list, setList] = useState(Array.from({ length: 3 }, () => geItem()))
 
-  const [list, setList] = useState(
-    Array.from(
-      {
-        length: 3
-      },
-      () => ({
-        id: crypto.randomUUID()
-      })
-    )
-  )
+  function add() {
+    setList((s) => [...s, geItem()])
+  }
+
+  function viewSource() {
+    open("https://github.com/jhxxs/pan", "_blank")
+  }
 
   return (
     <ChakraProvider theme={theme}>
-      <div
-        className={css`
-          padding: 0 24px;
-        `}
-      >
-        <div
-          className={css`
-            height: 60px;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            /* padding: 0 24px; */
-          `}
-        >
-          <ThemeToggle />
+      <div className="px-24px pb-24px">
+        <div className="flex justify-between items-center h-60px mb-16px">
+          <h1>百度云盘</h1>
+          <div>
+            <Button variant="ghost" onClick={viewSource}>
+              <Icon as={ImGithub} />
+            </Button>
+            <ThemeToggle ml=".5rem" />
+          </div>
         </div>
 
         {list.map(({ id }) => (
           <Pan key={id} />
         ))}
+
+        {list.length < 5 && (
+          <Button
+            width="full"
+            variant="outline"
+            borderStyle="dashed"
+            onClick={add}
+            fontSize="smaller"
+          >
+            追加一项
+          </Button>
+        )}
       </div>
     </ChakraProvider>
   )
