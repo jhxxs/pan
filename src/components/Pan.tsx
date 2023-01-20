@@ -10,7 +10,10 @@ import {
 } from "@chakra-ui/react"
 import { useState } from "react"
 
-const Pan: React.FC<{}> = (props) => {
+const Pan: React.FC<{
+  isDeleteDisabled?: boolean
+  onDelete?: () => void
+}> = (props) => {
   const toast = useToast()
 
   const [value, setValue] = useState("")
@@ -59,25 +62,49 @@ const Pan: React.FC<{}> = (props) => {
 
   return (
     <>
-      <InputGroup size="md" mb="1.5rem">
-        <Input
-          placeholder="请输入云盘分享地址，形如123abcdefg-mxht"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          pr="7.5rem"
-        />
+      <div className="flex gap-8px items-center mb-1.5rem">
+        <InputGroup size="md">
+          <Input
+            placeholder="分享代码"
+            value={value}
+            onChange={(e) => setValue(e.target.value)}
+            pr="5rem"
+            py="1.4rem"
+          />
 
-        <InputRightElement className="!w-auto !right-1rem">
-          <ButtonGroup>
-            <Button size="sm" onClick={() => setValue("")}>
-              <CloseIcon />
-            </Button>
-            <Button size="sm" onClick={pasteText}>
-              <EditIcon />
-            </Button>
-          </ButtonGroup>
-        </InputRightElement>
-      </InputGroup>
+          <InputRightElement height="full" w="auto" right="0.5rem">
+            <ButtonGroup gap={0}>
+              {value && (
+                <Button
+                  className="!p-0"
+                  size="sm"
+                  onClick={() => setValue("")}
+                  variant="ghost"
+                >
+                  <CloseIcon fontSize="10px" />
+                </Button>
+              )}
+              <Button
+                className="!ml-0"
+                ml={0}
+                padding={0}
+                size="sm"
+                onClick={pasteText}
+                variant="ghost"
+              >
+                <EditIcon />
+              </Button>
+            </ButtonGroup>
+          </InputRightElement>
+        </InputGroup>
+        <Button
+          disabled={props.isDeleteDisabled}
+          variant="ghost"
+          onClick={props.onDelete}
+        >
+          <DeleteIcon />
+        </Button>
+      </div>
     </>
   )
 }
