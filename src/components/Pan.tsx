@@ -147,11 +147,12 @@ const Pan: React.FC<{
         <Alert status="success">
           <AlertIcon />
           <Link
+            className="break-all"
             isExternal
             href={url}
             onClick={(e) => {
               e.preventDefault()
-              toast({
+              const toastId = toast({
                 title: "密码已粘贴",
                 status: "success",
                 position: "top"
@@ -159,10 +160,11 @@ const Pan: React.FC<{
               copy(password)
               setTimeout(() => {
                 window.open(url, "_blank")
-              }, 200)
+                toast.close(toastId)
+              }, 250)
             }}
           >
-            {`${panHost}${code}#${password}`}
+            <span>{`${panHost}${code}#${password}`}</span>
             <ExternalLinkIcon mx=".5rem" />
           </Link>
         </Alert>

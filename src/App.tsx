@@ -1,28 +1,14 @@
-import { useCallback, useState } from "react"
+import { useState } from "react"
 import "./App.css"
-
-import {
-  ChakraProvider,
-  Button,
-  useToast,
-  Alert,
-  AlertIcon,
-  Code,
-  Stack
-} from "@chakra-ui/react"
-import theme from "./utils/theme"
-import ThemeToggle from "./components/ThemeToggle"
-import Pan from "./components/Pan"
-import { Icon } from "@chakra-ui/react"
-import { ImGithub } from "react-icons/im"
 import { EditIcon } from "@chakra-ui/icons"
+import { Button, ChakraProvider, Code, Icon, Stack } from "@chakra-ui/react"
+import { ImGithub } from "react-icons/im"
+import Pan from "./components/Pan"
+import ThemeToggle from "./components/ThemeToggle"
 import { formatExample } from "./utils/constants"
+import theme from "./utils/theme"
 
-function geItem() {
-  return {
-    id: crypto.randomUUID()
-  }
-}
+const geItem = () => ({ id: crypto.randomUUID() })
 
 function App() {
   // console.log("render")
@@ -57,9 +43,8 @@ function App() {
         </div>
 
         <ul>
-          <li className="text-sm mb-16px">
-            1. 输入分享地址，格式为 <Code>{formatExample}</Code> ,
-            或点击输入框右侧的{" "}
+          <li className="text-sm mb-16px break-all">
+            1. 输入格式为 <Code>{formatExample}</Code> , 或点击输入框右侧的{" "}
             <Code className="!inline-flex items-center h-20px justify-center ">
               <EditIcon fontSize="12px" marginX=".1rem" />
             </Code>{" "}
