@@ -7,7 +7,8 @@ import {
   useToast,
   Alert,
   AlertIcon,
-  Code
+  Code,
+  Stack
 } from "@chakra-ui/react"
 import theme from "./utils/theme"
 import ThemeToggle from "./components/ThemeToggle"
@@ -15,6 +16,7 @@ import Pan from "./components/Pan"
 import { Icon } from "@chakra-ui/react"
 import { ImGithub } from "react-icons/im"
 import { EditIcon } from "@chakra-ui/icons"
+import { formatExample } from "./utils/constants"
 
 function geItem() {
   return {
@@ -23,12 +25,12 @@ function geItem() {
 }
 
 function App() {
-  console.log("render")
+  // console.log("render")
   const [list, setList] = useState(Array.from({ length: 3 }, () => geItem()))
 
   function add() {
     setList((s) => {
-      console.log("add", s)
+      // console.log("add", s)
       return [...s, geItem()]
     })
   }
@@ -37,23 +39,15 @@ function App() {
     open("https://github.com/jhxxs/pan", "_blank")
   }
 
-  const handleDelete = useCallback((index: number) => {
-    // console.log("onDelete", index)
-
-    setList((s) => {
-      console.log("de", s)
-      const next = s.slice(index + 1)
-      if (index <= 0) return next
-      const prev = s.slice(0, index)
-      return [...prev, ...next]
-    })
-  }, [])
+  function handleDelete(id: string) {
+    setList((s) => s.filter((v) => v.id !== id))
+  }
 
   return (
     <ChakraProvider theme={theme}>
       <div className="px-24px pb-24px">
         <div className="flex justify-between items-center h-60px mb-16px">
-          <h1>Pan Decoder</h1>
+          <h1 className="font-bold">Pan Decoder</h1>
           <div>
             <Button variant="ghost" onClick={viewSource}>
               <Icon as={ImGithub} />
@@ -62,17 +56,29 @@ function App() {
           </div>
         </div>
 
-        <p className="text-sm mb-16px">
-          输入分享地址，格式为 <Code>abcdefg-xyzm</Code> , 或点击输入框右侧的{" "}
-          <Code className="!inline-flex items-center h-20px justify-center ">
-            <EditIcon fontSize="12px" />
-          </Code>{" "}
-          直接进行粘贴。
-        </p>
+        <ul>
+          <li className="text-sm mb-16px">
+            1. 输入分享地址，格式为 <Code>{formatExample}</Code> ,
+            或点击输入框右侧的{" "}
+            <Code className="!inline-flex items-center h-20px justify-center ">
+              <EditIcon fontSize="12px" marginX=".1rem" />
+            </Code>{" "}
+            直接进行粘贴。
+          </li>
+          <li className="text-sm mb-16px">
+            2. 点击解析后生成的🔗会自动复制密码并跳转到分享页
+          </li>
+        </ul>
 
-        {list.map(({ id }, index) => (
-          <Pan key={id} onDelete={() => handleDelete(index)} />
-        ))}
+        <Stack mb="2rem" spacing="1rem">
+          {list.map(({ id }, index) => (
+            <Pan
+              key={id}
+              onDelete={() => handleDelete(id)}
+              isDeleteDisabled={list.length <= 1 && index == 0}
+            />
+          ))}
+        </Stack>
 
         {list.length < 5 && (
           <Button

@@ -1,73 +1,111 @@
-import { CloseIcon, DeleteIcon, EditIcon } from "@chakra-ui/icons"
 import {
+  CloseIcon,
+  DeleteIcon,
+  EditIcon,
+  ExternalLinkIcon
+} from "@chakra-ui/icons"
+import {
+  Alert,
+  AlertIcon,
   Button,
   ButtonGroup,
   Input,
-  InputAddon,
   InputGroup,
   InputRightElement,
+  Link,
+  useClipboard,
   useToast
 } from "@chakra-ui/react"
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
+import { formatExample, panHost } from "../utils/constants"
+import { useCopyToClipboard } from "react-use"
 
 const Pan: React.FC<{
   isDeleteDisabled?: boolean
   onDelete?: () => void
 }> = (props) => {
   const toast = useToast()
+  const [, copy] = useCopyToClipboard()
 
   const [value, setValue] = useState("")
 
+  const [code, setCode] = useState("")
+  const [password, setPassword] = useState("")
+
+  const url = useMemo(
+    () => `${panHost}${code || ""}#${password}`,
+    [code, password]
+  )
+
   async function readText() {
-    let text = ""
-    try {
-      // const permission =
-      await navigator.permissions.query({
-        // @ts-expect-error
-        name: "clipboard-read"
-      })
-      // if (permission.state === "denied") {
-      //   toast({
-      //     title: "浏览器不让读取粘贴板🥲",
-      //     status: "warning",
-      //     isClosable: true,
-      //     position: "top"
-      //   })
-      // }
-      const clipboardContents = await navigator.clipboard.read()
+    return new Promise<string>(async (resolve, reject) => {
+      let text = ""
+      try {
+        await navigator.permissions.query({
+          // @ts-expect-error
+          name: "clipboard-read"
+        })
 
-      for (const item of clipboardContents) {
-        if (item.types.includes("text/plain")) {
-          const blob = await item.getType("text/plain")
-          text = await blob.text()
-          console.log("🚀 ~ file: Pan.tsx:39 ~ pasteText ~ text", text)
-          break
+        const clipboardContents = await navigator.clipboard.read()
+
+        for (const item of clipboardContents) {
+          if (item.types.includes("text/plain")) {
+            const blob = await item.getType("text/plain")
+            text = await blob.text()
+            // console.log("🚀 ~ file: Pan.tsx:39 ~ pasteText ~ text", text)
+            return resolve(text)
+          }
         }
-      }
-    } catch (error) {
-      toast({
-        title: (error as Error).message,
-        status: "error",
-        isClosable: true,
-        position: "top"
-      })
-    }
 
-    return text
+        reject()
+      } catch (error) {
+        toast({
+          title: "粘贴失败，手动输入吧🤡",
+          status: "error",
+          position: "top",
+          isClosable: true
+        })
+        reject()
+      }
+    })
   }
 
   function pasteText() {
     readText().then((s) => setValue(s))
   }
 
+  useEffect(() => {
+    if (value) {
+      if (value.match(/^[a-zA-Z0-9]+\-[a-zA-Z0-9]{4}$/g)) {
+        const arr = value.split("-")
+        setCode(arr[0])
+        setPassword(arr[1])
+      } else {
+        toast.closeAll()
+        toast({
+          title: `格式不对，请输入${formatExample}这样格式的字符串`,
+          status: "info",
+          position: "top",
+          isClosable: true
+        })
+
+        setCode("")
+        setPassword("")
+      }
+    } else {
+      setCode("")
+      setPassword("")
+    }
+  }, [value])
+
   return (
     <>
-      <div className="flex gap-8px items-center mb-1.5rem">
+      <div className="flex gap-8px items-center">
         <InputGroup size="md">
           <Input
             placeholder="分享代码"
             value={value}
-            onChange={(e) => setValue(e.target.value)}
+            onChange={(e) => setValue(e.target.value.trim())}
             pr="5rem"
             py="1.4rem"
           />
@@ -98,13 +136,37 @@ const Pan: React.FC<{
           </InputRightElement>
         </InputGroup>
         <Button
-          disabled={props.isDeleteDisabled}
+          isDisabled={props.isDeleteDisabled}
           variant="ghost"
           onClick={props.onDelete}
         >
           <DeleteIcon />
         </Button>
       </div>
+      {code && password && (
+        <Alert status="success">
+          <AlertIcon />
+          <Link
+            isExternal
+            href={url}
+            onClick={(e) => {
+              e.preventDefault()
+              toast({
+                title: "密码已粘贴",
+                status: "success",
+                position: "top"
+              })
+              copy(password)
+              setTimeout(() => {
+                window.open(url, "_blank")
+              }, 200)
+            }}
+          >
+            {`${panHost}${code}#${password}`}
+            <ExternalLinkIcon mx=".5rem" />
+          </Link>
+        </Alert>
+      )}
     </>
   )
 }
