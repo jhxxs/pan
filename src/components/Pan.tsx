@@ -52,7 +52,7 @@ const Pan: React.FC<{
           if (item.types.includes("text/plain")) {
             const blob = await item.getType("text/plain")
             text = await blob.text()
-            // console.log("🚀 ~ file: Pan.tsx:39 ~ pasteText ~ text", text)
+            // console.log("get copied text:", text)
             return resolve(text)
           }
         }
@@ -76,10 +76,11 @@ const Pan: React.FC<{
 
   useEffect(() => {
     if (value) {
-      if (value.match(/^[a-zA-Z0-9]+\-[a-zA-Z0-9]{4}$/g)) {
-        const arr = value.split("-")
-        setCode(arr[0])
-        setPassword(arr[1])
+      if (value.match(/^[a-zA-Z0-9_-]+-[a-zA-Z0-9]{4}$/g)) {
+        const index = value.lastIndexOf("-")
+
+        setCode(value.slice(0, index))
+        setPassword(value.slice(index + 1))
       } else {
         toast.closeAll()
         toast({

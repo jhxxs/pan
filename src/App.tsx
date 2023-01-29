@@ -65,7 +65,7 @@ function App() {
           ))}
         </Stack>
 
-        {list.length < 5 && (
+        {list.length < 8 && (
           <Button
             width="full"
             variant="outline"
