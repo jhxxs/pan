@@ -13,19 +13,16 @@ import {
   InputGroup,
   InputRightElement,
   Link,
-  useClipboard,
   useToast
 } from "@chakra-ui/react"
 import { useEffect, useMemo, useState } from "react"
 import { formatExample, panHost } from "../utils/constants"
-import { useCopyToClipboard } from "react-use"
 
 const Pan: React.FC<{
   isDeleteDisabled?: boolean
   onDelete?: () => void
 }> = (props) => {
   const toast = useToast()
-  const [, copy] = useCopyToClipboard()
 
   const [value, setValue] = useState("")
 
@@ -33,7 +30,7 @@ const Pan: React.FC<{
   const [password, setPassword] = useState("")
 
   const url = useMemo(
-    () => `${panHost}${code || ""}#${password}`,
+    () => `${panHost}${code || ""}?pwd=${password}`,
     [code, password]
   )
 
@@ -147,25 +144,8 @@ const Pan: React.FC<{
       {code && password && (
         <Alert status="success">
           <AlertIcon />
-          <Link
-            className="break-all"
-            isExternal
-            href={url}
-            onClick={(e) => {
-              e.preventDefault()
-              const toastId = toast({
-                title: "密码已粘贴",
-                status: "success",
-                position: "top"
-              })
-              copy(password)
-              setTimeout(() => {
-                window.open(url, "_blank")
-                toast.close(toastId)
-              }, 250)
-            }}
-          >
-            <span>{`${panHost}${code}#${password}`}</span>
+          <Link className="break-all" isExternal href={url}>
+            <span>{url}</span>
             <ExternalLinkIcon mx=".5rem" />
           </Link>
         </Alert>

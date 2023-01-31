@@ -50,9 +50,7 @@ function App() {
             </Code>{" "}
             直接进行粘贴。
           </li>
-          <li className="text-sm mb-16px">
-            2. 点击解析后生成的🔗会自动复制密码并跳转到分享页
-          </li>
+          <li className="text-sm mb-16px">2. 点击解析后生成的🔗跳转到分享页</li>
         </ul>
 
         <Stack mb="2rem" spacing="1rem">
