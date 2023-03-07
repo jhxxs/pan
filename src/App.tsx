@@ -31,7 +31,7 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <div className="px-24px pb-24px">
+      <div className="px-24px pb-24px lg:w-3/5 mx-auto">
         <div className="flex justify-between items-center h-60px mb-16px">
           <h1 className="font-bold">Pan Decoder</h1>
           <div>
