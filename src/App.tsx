@@ -31,8 +31,8 @@ function App() {
 
   return (
     <ChakraProvider theme={theme}>
-      <div className="px-24px pb-24px lg:w-3/5 mx-auto">
-        <div className="flex justify-between items-center h-60px mb-16px">
+      <div className="pb-24px w-full">
+        <header className="flex justify-between items-center h-60px mb-16px w-1000px mx-auto max-w-full px-1rem">
           <h1 className="font-bold">Pan Decoder</h1>
           <div>
             <Button variant="ghost" onClick={viewSource}>
@@ -40,40 +40,44 @@ function App() {
             </Button>
             <ThemeToggle ml=".5rem" />
           </div>
-        </div>
+        </header>
 
-        <ul>
-          <li className="text-sm mb-16px break-all">
-            1. 输入格式为 <Code>{formatExample}</Code> , 或点击输入框右侧的{" "}
-            <Code className="!inline-flex items-center h-20px justify-center ">
-              <EditIcon fontSize="12px" marginX=".1rem" />
-            </Code>{" "}
-            直接进行粘贴。
-          </li>
-          <li className="text-sm mb-16px">2. 点击解析后生成的🔗跳转到分享页</li>
-        </ul>
+        <main className="mx-auto max-w-full w-800px px-1rem">
+          <ul>
+            <li className="text-sm mb-16px break-all">
+              1. 输入格式为 <Code>{formatExample}</Code> , 或点击输入框右侧的{" "}
+              <Code className="!inline-flex items-center h-20px justify-center ">
+                <EditIcon fontSize="12px" marginX=".1rem" />
+              </Code>{" "}
+              直接进行粘贴。
+            </li>
+            <li className="text-sm mb-16px">
+              2. 点击解析后生成的🔗跳转到分享页
+            </li>
+          </ul>
 
-        <Stack mb="2rem" spacing="1rem">
-          {list.map(({ id }, index) => (
-            <Pan
-              key={id}
-              onDelete={() => handleDelete(id)}
-              isDeleteDisabled={list.length <= 1 && index == 0}
-            />
-          ))}
-        </Stack>
+          <Stack mb="2rem" spacing="1rem">
+            {list.map(({ id }, index) => (
+              <Pan
+                key={id}
+                onDelete={() => handleDelete(id)}
+                isDeleteDisabled={list.length <= 1 && index == 0}
+              />
+            ))}
+          </Stack>
 
-        {list.length < 8 && (
-          <Button
-            width="full"
-            variant="outline"
-            borderStyle="dashed"
-            onClick={add}
-            fontSize="smaller"
-          >
-            追加一项
-          </Button>
-        )}
+          {list.length < 8 && (
+            <Button
+              width="full"
+              variant="outline"
+              borderStyle="dashed"
+              onClick={add}
+              fontSize="smaller"
+            >
+              追加一项
+            </Button>
+          )}
+        </main>
       </div>
     </ChakraProvider>
   )
